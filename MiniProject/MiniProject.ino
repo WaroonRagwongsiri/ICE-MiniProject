@@ -190,7 +190,7 @@ void	display_board_serial(void)
 			if (col < 6)
 			{
 				Serial.print(",");
-				msg += ", ";
+				msg += ",";
 			}
 		}
 		msg += "\n";
