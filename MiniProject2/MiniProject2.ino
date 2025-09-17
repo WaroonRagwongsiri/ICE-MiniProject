@@ -1,17 +1,24 @@
-#define RX_IN 0
+// Include Serial
+#include <SoftwareSerial.h>
 
-String msg;
+// Define Out
+#define TX_OUT 4
+#define RX_IN 3
+
+const SoftwareSerial	mySerial(RX_IN, TX_OUT);
 
 void	setup()
 {
 	Serial.begin(9600);
+	mySerial.begin(2400);
 }
 
 void	loop()
 {
-	while (Serial.available())
+	String	msg;
+	while (mySerial.available())
 	{
-		msg = Serial.readString();
+		msg = mySerial.readString();
 		Serial.println(msg);
 	}
 }
