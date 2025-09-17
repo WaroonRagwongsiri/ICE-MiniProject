@@ -90,6 +90,7 @@ void	setup(void)
 
 void	loop(void)
 {
+	String	msg;
 	int	input;
 
 	// Handle no state change
@@ -106,6 +107,10 @@ void	loop(void)
 		Serial.print("Winner is Player: ");
 		Serial.println(winner);
 		winner = 0;
+		msg = "Winner is Player: ";
+		msg += (String) winner;
+		mySerial.println(msg);
+		delay(1000);
 		set_zero_board();
 		display_board_serial();
 	}
