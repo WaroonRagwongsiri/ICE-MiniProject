@@ -67,41 +67,42 @@ void setup() {
 }
 
 void loop() {
-  if (mySerial.available() > 0) {
-    serial_to_board();
-    display_board_serial();
-    if (!currentPlayer) {
-      digitalWrite(Led1, HIGH);
-      digitalWrite(Led2, LOW);
-      tft.setColor(Red);
-      tft.fillRect(0, 0, 159, 18);  //Banner
-      tft.setBackColor(Trans);
-      tft.setColor(White);
-      tft.print(String("Player 2"), CENTER, 1);
-      currentPlayer = !currentPlayer;
-    } else {
-      digitalWrite(Led1, LOW);
-      digitalWrite(Led2, HIGH);
-      tft.setColor(Green);
-      tft.fillRect(0, 0, 159, 18);  //Banner
-      tft.setBackColor(Trans);
-      tft.setColor(Black);
-      tft.print(String("Player 1"), CENTER, 1);
-      currentPlayer = !currentPlayer;
-    }
-    for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < 7; j++) {
-        if (board[i][j] == 1) {
-          tft.setColor(Green);
-          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
-        }
-        if (board[i][j] == 2) {
-          tft.setColor(Red);
-          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
-        }
-      }
-    }
-  }
+	int	winner;
+
+	if (mySerial.available() > 0)
+	{
+		serial_to_board();
+		display_board_serial();
+		if (!currentPlayer)
+		{
+			digitalWrite(Led1, HIGH);
+			digitalWrite(Led2, LOW);
+			tft.setColor(Red);
+			tft.fillRect(0, 0, 159, 18);  //Banner
+			tft.setBackColor(Trans);
+			tft.setColor(White);
+			tft.print(String("Player 2"), CENTER, 1);
+			currentPlayer = !currentPlayer;
+		}
+		else
+		{
+			digitalWrite(Led1, LOW);
+			digitalWrite(Led2, HIGH);
+			tft.setColor(Green);
+			tft.fillRect(0, 0, 159, 18);  //Banner
+			tft.setBackColor(Trans);
+			tft.setColor(Black);
+			tft.print(String("Player 1"), CENTER, 1);
+			currentPlayer = !currentPlayer;
+		}
+		display_tft();
+		winner = check_win();
+		if (winner)
+		{
+			Serial.println("TFT Overwrite Board here!!!");
+		}
+		delay(1000);
+	}
 }
 
 void serial_to_board() {
@@ -136,4 +137,42 @@ void display_board_serial(void) {
     Serial.println();
   }
   Serial.println();
+}
+
+void	display_tft(void)
+{
+	for (int i = 0; i < 6; i++) {
+      for (int j = 0; j < 7; j++) {
+        if (board[i][j] == 1) {
+          tft.setColor(Green);
+          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+        }
+        if (board[i][j] == 2) {
+          tft.setColor(Red);
+          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+        }
+      }
+    }
+}
+
+int	check_win(void)
+{
+	int	row;
+	int	col;
+
+	row = 0;
+	col = 0;
+	winner = board[0][0];
+	while (row < 6)
+	{
+		col = 0;
+		while (col < 7)
+		{
+			if (winner != board[row][col])
+				return (0);
+			col++;
+		}
+		row++;
+	}
+	return (winner);
 }
