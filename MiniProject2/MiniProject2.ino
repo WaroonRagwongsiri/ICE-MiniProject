@@ -71,6 +71,10 @@ void loop() {
 	{
 		serial_to_board();
 		display_board_serial();
+    if (check_zero())
+    {
+      currentPlayer = 1;
+    }
 		if (!currentPlayer)
 		{
 			digitalWrite(Led1, HIGH);
@@ -93,10 +97,6 @@ void loop() {
 			tft.print(String("Player 1"), CENTER, 1);
 			currentPlayer = !currentPlayer;
 		}
-    if (check_zero())
-    {
-      currentPlayer = 1;
-    }
 		display_tft();
 	}
 }
