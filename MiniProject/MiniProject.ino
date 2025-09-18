@@ -5,7 +5,7 @@
 #define TX_OUT 4
 #define RX_IN 3
 
-const SoftwareSerial	mySerial(RX_IN, TX_OUT);
+const SoftwareSerial mySerial(RX_IN, TX_OUT);
 
 // Define Input Button
 #define BUTTON_0 13
@@ -32,21 +32,20 @@ const SoftwareSerial	mySerial(RX_IN, TX_OUT);
 #define col5_p2 12
 #define col6_p2 13
 
-typedef struct s_fsm
-{
-	int	col;
-	int	player;
-	int	time;
-	int	next_st[8];
-}	t_fsm;
+typedef struct s_fsm {
+  int col;
+  int player;
+  int time;
+  int next_st[8];
+} t_fsm;
 
 static int	board[6][7] = {
-	{0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,},
-	{0,0,0,0,0,0,0,},
+	{0, 0, 0, 0, 0, 0, 0,},
+	{0, 0, 0, 0, 0, 0, 0,},
+	{0, 0, 0, 0, 0, 0, 0,},
+	{0, 0, 0, 0, 0, 0, 0,},
+	{0, 0, 0, 0, 0, 0, 0,},
+	{0, 0, 0, 0, 0, 0, 0,},
 };
 
 t_fsm	FSM[14] = {
@@ -67,262 +66,235 @@ t_fsm	FSM[14] = {
 	{6, 2, 1500, {col6_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col6_p2
 };
 
-static int	ST = col0_p2;
-static int	last_ST = col0_p2;
-static int	winner = 0;
+static int ST = col0_p2;
+static int last_ST = col0_p2;
+static int winner = 0;
 
-void	setup(void)
-{
-	// Setup Button
-	pinMode(BUTTON_0, INPUT_PULLUP);
-	pinMode(BUTTON_1, INPUT_PULLUP);
-	pinMode(BUTTON_2, INPUT_PULLUP);
-	pinMode(BUTTON_3, INPUT_PULLUP);
-	pinMode(BUTTON_4, INPUT_PULLUP);
-	pinMode(BUTTON_5, INPUT_PULLUP);
-	pinMode(BUTTON_6, INPUT_PULLUP);
+void setup(void) {
+  // Setup Button
+  pinMode(BUTTON_0, INPUT_PULLUP);
+  pinMode(BUTTON_1, INPUT_PULLUP);
+  pinMode(BUTTON_2, INPUT_PULLUP);
+  pinMode(BUTTON_3, INPUT_PULLUP);
+  pinMode(BUTTON_4, INPUT_PULLUP);
+  pinMode(BUTTON_5, INPUT_PULLUP);
+  pinMode(BUTTON_6, INPUT_PULLUP);
 
-	// Serial Display
-	Serial.begin(9600);
-	mySerial.begin(2400);
-	display_board_serial();
+  // Serial Display
+  Serial.begin(9600);
+  mySerial.begin(2400);
+  Serial.setTimeout(50);
+  mySerial.setTimeout(50);
+  display_board_serial();
 }
 
-void	loop(void)
-{
-	String	msg;
-	int	input;
+void loop(void) {
+  String msg;
+  int input;
 
-	// Handle no state change
-	if (last_ST != ST)
-	{
-		put_coin(FSM[ST].col, FSM[ST].player);
-		display_board_serial();
-		winner = check_win();
-		last_ST = ST;
-	}
-	// Handle win
-	if (winner)
-	{
-		Serial.print("Winner is Player: ");
-		Serial.println(winner);
-		winner = 0;
-		msg = "Winner is Player: ";
-		msg += (String) winner;
-		mySerial.println(msg);
-		delay(1000);
-		set_zero_board();
-		display_board_serial();
-	}
-	delay(FSM[ST].time);
+  // Handle no state change
+  if (last_ST != ST) {
+    put_coin(FSM[ST].col, FSM[ST].player);
+    display_board_serial();
+    winner = check_win();
+    last_ST = ST;
+  }
+  // Handle win
+  if (winner) {
+    Serial.print("Winner is Player: ");
+    Serial.println(winner);
+    winner = 0;
+    msg = "Winner is Player: ";
+    msg += (String)winner;
+    mySerial.println(msg);
+    delay(1000);
+    set_zero_board();
+    display_board_serial();
+  }
+  delay(FSM[ST].time);
 
-	// Input State
-	input = get_input();
-	ST = FSM[ST].next_st[input];
+  // Input State
+  input = get_input();
+  ST = FSM[ST].next_st[input];
 }
 
-int	get_input(void)
-{
-	int	input0;
-	int	input1;
-	int	input2;
-	int	input3;
-	int	input4;
-	int	input5;
-	int	input6;
-	int	input;
+int get_input(void) {
+  int input0;
+  int input1;
+  int input2;
+  int input3;
+  int input4;
+  int input5;
+  int input6;
+  int input;
 
-	input0 = !(digitalRead(BUTTON_0)) * 1;
-	input1 = !(digitalRead(BUTTON_1)) * 2;
-	input2 = !(digitalRead(BUTTON_2)) * 4;
-	input3 = !(digitalRead(BUTTON_3)) * 8;
-	input4 = !(digitalRead(BUTTON_4)) * 16;
-	input5 = !(digitalRead(BUTTON_5)) * 32;
-	input6 = !(digitalRead(BUTTON_6)) * 64;
+  input0 = !(digitalRead(BUTTON_0)) * 1;
+  input1 = !(digitalRead(BUTTON_1)) * 2;
+  input2 = !(digitalRead(BUTTON_2)) * 4;
+  input3 = !(digitalRead(BUTTON_3)) * 8;
+  input4 = !(digitalRead(BUTTON_4)) * 16;
+  input5 = !(digitalRead(BUTTON_5)) * 32;
+  input6 = !(digitalRead(BUTTON_6)) * 64;
 
-	input = input0 + input1 + input2 + input3 + input4 + input5 + input6;
-	if (input == 1)
-		return (1);
-	else if (input == 2)
-		return (2);
-	else if (input == 4)
-		return (3);
-	else if (input == 8)
-		return (4);
-	else if (input == 16)
-		return (5);
-	else if (input == 32)
-		return (6);
-	else if (input == 64)
-		return (7);
-	else
-		return (0);
+  input = input0 + input1 + input2 + input3 + input4 + input5 + input6;
+  if (input == 1)
+    return (1);
+  else if (input == 2)
+    return (2);
+  else if (input == 4)
+    return (3);
+  else if (input == 8)
+    return (4);
+  else if (input == 16)
+    return (5);
+  else if (input == 32)
+    return (6);
+  else if (input == 64)
+    return (7);
+  else
+    return (0);
 }
 
-void	put_coin(int col, int player)
-{
-    int	i;
+void put_coin(int col, int player) {
+  int i;
 
-	i = 5;
-    while (i >= 0)
-	{
-		if (board[i][col] == 0)
-		{
-			board[i][col] = player;
-			return ;
-		}
-		--i;
-	}
+  i = 5;
+  while (i >= 0) {
+    if (board[i][col] == 0) {
+      board[i][col] = player;
+      return;
+    }
+    --i;
+  }
 }
 
-void	display_board_serial(void)
-{
-	String	msg;
+void display_board_serial(void) {
+  String msg;
 
-	msg = "";
-	Serial.println("Board Array:");
-	for (int row = 0; row < 6; row++)
-	{
-		for (int col = 0; col < 7; col++)
-		{
-			Serial.print(board[row][col]);
-			msg += (String) (board[row][col]);
-			if (col < 6)
-			{
-				Serial.print(",");
-				msg += ",";
-			}
-		}
-		msg += "\n";
-		Serial.println();
-	}
-	mySerial.print(msg);
-	Serial.println();
+  msg = "";
+  Serial.println("Board Array:");
+  for (int row = 0; row < 6; row++) {
+    for (int col = 0; col < 7; col++) {
+      Serial.print(board[row][col]);
+      msg += (String)(board[row][col]);
+      if (col < 6) {
+        Serial.print(",");
+        msg += ",";
+      }
+    }
+    msg += "\n";
+    Serial.println();
+  }
+  mySerial.print(msg);
+  Serial.println();
 }
 
-int	check_win(void)
-{
-	int	row;
-	int	col;
-	int	player;
+int check_win(void) {
+  int row;
+  int col;
+  int player;
 
-	row = 5;
-	player = 1;
-	while (row >= 0)
-	{
-		col = 6;
-		while (col >= 0)
-		{
-			if (board[row][col])
-			{
-				player = board[row][col];
-				if (check_win_up(row, col, player) || check_win_left(row, col, player)
-					|| check_win_right(row, col, player) || check_win_up_left(row, col, player)
-					|| check_win_up_right(row, col, player))
-					return (player);
-			}
-			--col;
-		}
-		--row;
-	}
-	return (0);
+  row = 5;
+  player = 1;
+  while (row >= 0) {
+    col = 6;
+    while (col >= 0) {
+      if (board[row][col]) {
+        player = board[row][col];
+        if (check_win_up(row, col, player) || check_win_left(row, col, player)
+            || check_win_right(row, col, player) || check_win_up_left(row, col, player)
+            || check_win_up_right(row, col, player))
+          return (player);
+      }
+      --col;
+    }
+    --row;
+  }
+  return (0);
 }
 
-int	check_win_up(int row, int col, int player)
-{
-	int	i;
+int check_win_up(int row, int col, int player) {
+  int i;
 
-	if (row < 3)
-		return (0);
-	i = 0;
-	while (i < 4)
-	{
-		if (board[row - i][col] != player)
-			return (0);
-		++i;
-	}
-	return (player);
+  if (row < 3)
+    return (0);
+  i = 0;
+  while (i < 4) {
+    if (board[row - i][col] != player)
+      return (0);
+    ++i;
+  }
+  return (player);
 }
 
-int	check_win_left(int row, int col, int player)
-{
-	int	i;
+int check_win_left(int row, int col, int player) {
+  int i;
 
-	if (col < 3)
-		return (0);
-	i = 0;
-	while (i < 4)
-	{
-		if (board[row][col - i] != player)
-			return (0);
-		++i;
-	}
-	return (player);
+  if (col < 3)
+    return (0);
+  i = 0;
+  while (i < 4) {
+    if (board[row][col - i] != player)
+      return (0);
+    ++i;
+  }
+  return (player);
 }
-int	check_win_right(int row, int col, int player)
-{
-	int	i;
+int check_win_right(int row, int col, int player) {
+  int i;
 
-	if (col > 3)
-		return (0);
-	i = 0;
-	while (i < 4)
-	{
-		if (board[row][col + i] != player)
-			return (0);
-		++i;
-	}
-	return (player);
+  if (col > 3)
+    return (0);
+  i = 0;
+  while (i < 4) {
+    if (board[row][col + i] != player)
+      return (0);
+    ++i;
+  }
+  return (player);
 }
 
-int	check_win_up_left(int row, int col, int player)
-{
-	int	i;
+int check_win_up_left(int row, int col, int player) {
+  int i;
 
-	if (row < 3 || col < 3)
-		return (0);
-	i = 0;
-	while (i < 4)
-	{
-		if (board[row - i][col - i] != player)
-			return (0);
-		++i;
-	}
-	return (player);
+  if (row < 3 || col < 3)
+    return (0);
+  i = 0;
+  while (i < 4) {
+    if (board[row - i][col - i] != player)
+      return (0);
+    ++i;
+  }
+  return (player);
 }
 
-int	check_win_up_right(int row, int col, int player)
-{
-	int	i;
+int check_win_up_right(int row, int col, int player) {
+  int i;
 
-	if (row < 3 || col > 3)
-		return (0);
-	i = 0;
-	while (i < 4)
-	{
-		if (board[row - i][col + i] != player)
-			return (0);
-		++i;
-	}
-	return (player);
+  if (row < 3 || col > 3)
+    return (0);
+  i = 0;
+  while (i < 4) {
+    if (board[row - i][col + i] != player)
+      return (0);
+    ++i;
+  }
+  return (player);
 }
 
-void	set_zero_board(void)
-{
-	int	row;
-	int	col;
+void set_zero_board(void) {
+  int row;
+  int col;
 
-	row = 0;
-	while (row < 6)
-	{
-		col = 0;
-		while (col < 7)
-		{
-			board[row][col] = 0;
-			++col;
-		}
-		++row;
-	}
-	ST = col0_p2;
-	last_ST = col0_p2;
+  row = 0;
+  while (row < 6) {
+    col = 0;
+    while (col < 7) {
+      board[row][col] = 0;
+      ++col;
+    }
+    ++row;
+  }
+  ST = col0_p2;
+  last_ST = col0_p2;
 }
