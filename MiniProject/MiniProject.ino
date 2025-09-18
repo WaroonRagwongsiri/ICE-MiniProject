@@ -86,6 +86,7 @@ void setup(void) {
   Serial.setTimeout(50);
   mySerial.setTimeout(50);
   display_board_serial();
+  Serial.println("Board 1 Ready");
 }
 
 void loop(void) {
@@ -109,8 +110,8 @@ void loop(void) {
     fill_board(winner);
     display_board_serial();
     delay(1000);
-	fill_board(0)
-	display_board_serial();
+	  fill_board(0);
+	  display_board_serial();
     winner = 0;
   }
   delay(FSM[ST].time);

@@ -47,7 +47,7 @@ void setup() {
   tft.clrScr();
   pinMode(Led1, OUTPUT);
   pinMode(Led2, OUTPUT);
-  digitalWrite(Led1, HIGH);
+  digitalWrite(Led1, LOW);
   digitalWrite(Led2, HIGH);
   Serial.println("Board 2 Ready");
   tft.fillScr(Black);
