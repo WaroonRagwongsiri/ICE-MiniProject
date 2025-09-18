@@ -103,13 +103,15 @@ void loop(void) {
   if (winner) {
     Serial.print("Winner is Player: ");
     Serial.println(winner);
-    winner = 0;
     msg = "Winner is Player: ";
     msg += (String)winner;
     mySerial.println(msg);
-    delay(1000);
-    set_zero_board();
+    fill_board(winner);
     display_board_serial();
+    delay(1000);
+	fill_board(0)
+	display_board_serial();
+    winner = 0;
   }
   delay(FSM[ST].time);
 
@@ -282,7 +284,7 @@ int check_win_up_right(int row, int col, int player) {
   return (player);
 }
 
-void set_zero_board(void) {
+void fill_board(int player) {
   int row;
   int col;
 
@@ -290,7 +292,7 @@ void set_zero_board(void) {
   while (row < 6) {
     col = 0;
     while (col < 7) {
-      board[row][col] = 0;
+      board[row][col] = player;
       ++col;
     }
     ++row;
