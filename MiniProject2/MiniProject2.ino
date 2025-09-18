@@ -26,7 +26,7 @@ extern uint8_t BigFont[];
 //(Model,SDA,SCK,CS,RST,A0)
 UTFT tft(ST7735, 12, 13, 9, 10, 11);
 
-bool currentPlayer = 0;
+static bool currentPlayer = 0;
 //insert
 static int	board[6][7] = {
 	{0, 0, 0, 0, 0, 0, 0,},
@@ -40,8 +40,8 @@ static int	board[6][7] = {
 void setup() {
   Serial.begin(9600);
   mySerial.begin(2400);
-  Serial.setTimeout(50);
-  mySerial.setTimeout(50);
+  Serial.setTimeout(100);
+  mySerial.setTimeout(100);
   tft.InitLCD();
   tft.setFont(BigFont);
   tft.clrScr();
@@ -67,8 +67,6 @@ void setup() {
 }
 
 void loop() {
-	int	winner;
-
 	if (mySerial.available() > 0)
 	{
 		serial_to_board();
@@ -95,13 +93,11 @@ void loop() {
 			tft.print(String("Player 1"), CENTER, 1);
 			currentPlayer = !currentPlayer;
 		}
+    if (check_zero())
+    {
+      currentPlayer = 1;
+    }
 		display_tft();
-		winner = check_win();
-		if (winner)
-		{
-			Serial.println("TFT Overwrite Board here!!!");
-		}
-		delay(1000);
 	}
 }
 
@@ -143,6 +139,10 @@ void	display_tft(void)
 {
 	for (int i = 0; i < 6; i++) {
       for (int j = 0; j < 7; j++) {
+        if (board[i][j] == 0) {
+          tft.setColor(Black);
+          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+        }
         if (board[i][j] == 1) {
           tft.setColor(Green);
           tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
@@ -155,24 +155,23 @@ void	display_tft(void)
     }
 }
 
-int	check_win(void)
+int	check_zero(void)
 {
 	int	row;
 	int	col;
 
 	row = 0;
 	col = 0;
-	winner = board[0][0];
 	while (row < 6)
 	{
 		col = 0;
 		while (col < 7)
 		{
-			if (winner != board[row][col])
+			if (board[row][col] != 0)
 				return (0);
 			col++;
 		}
 		row++;
 	}
-	return (winner);
+	return (1);
 }

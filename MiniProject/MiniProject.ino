@@ -83,8 +83,8 @@ void setup(void) {
   // Serial Display
   Serial.begin(9600);
   mySerial.begin(2400);
-  Serial.setTimeout(50);
-  mySerial.setTimeout(50);
+  Serial.setTimeout(100);
+  mySerial.setTimeout(100);
   display_board_serial();
   Serial.println("Board 1 Ready");
 }
@@ -104,14 +104,15 @@ void loop(void) {
   if (winner) {
     Serial.print("Winner is Player: ");
     Serial.println(winner);
-    msg = "Winner is Player: ";
-    msg += (String)winner;
-    mySerial.println(msg);
+    delay(2000);
     fill_board(winner);
+    delay(2000);
     display_board_serial();
-    delay(1000);
+    delay(3000);
 	  fill_board(0);
+    delay(2000);
 	  display_board_serial();
+    delay(2000);
     winner = 0;
   }
   delay(FSM[ST].time);
