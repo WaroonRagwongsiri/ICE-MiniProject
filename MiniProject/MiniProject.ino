@@ -70,56 +70,61 @@ static int ST = col0_p2;
 static int last_ST = col0_p2;
 static int winner = 0;
 
-void setup(void) {
-  // Setup Button
-  pinMode(BUTTON_0, INPUT_PULLUP);
-  pinMode(BUTTON_1, INPUT_PULLUP);
-  pinMode(BUTTON_2, INPUT_PULLUP);
-  pinMode(BUTTON_3, INPUT_PULLUP);
-  pinMode(BUTTON_4, INPUT_PULLUP);
-  pinMode(BUTTON_5, INPUT_PULLUP);
-  pinMode(BUTTON_6, INPUT_PULLUP);
+void	setup(void)
+{
+	// Setup Button
+	pinMode(BUTTON_0, INPUT_PULLUP);
+	pinMode(BUTTON_1, INPUT_PULLUP);
+	pinMode(BUTTON_2, INPUT_PULLUP);
+	pinMode(BUTTON_3, INPUT_PULLUP);
+	pinMode(BUTTON_4, INPUT_PULLUP);
+	pinMode(BUTTON_5, INPUT_PULLUP);
+	pinMode(BUTTON_6, INPUT_PULLUP);
 
-  // Serial Display
-  Serial.begin(9600);
-  mySerial.begin(2400);
-  Serial.setTimeout(100);
-  mySerial.setTimeout(100);
-  display_board_serial();
-  Serial.println("Board 1 Ready");
+	// Serial Display
+	Serial.begin(9600);
+	mySerial.begin(2400);
+	Serial.setTimeout(100);
+	mySerial.setTimeout(100);
+	display_board_serial();
+	Serial.println("Board 1 Ready");
 }
 
-void loop(void) {
-  String msg;
-  int input;
+void	loop(void)
+{
+	String msg;
+	int input;
 
-  // Handle no state change
-  if (last_ST != ST) {
-    put_coin(FSM[ST].col, FSM[ST].player);
-    display_board_serial();
-    winner = check_win();
-    last_ST = ST;
-  }
-  // Handle win
-  if (winner) {
-    Serial.print("Winner is Player: ");
-    Serial.println(winner);
-    delay(2000);
-    fill_board(winner);
-    delay(2000);
-    display_board_serial();
-    delay(3000);
-	  fill_board(0);
-    delay(2000);
-	  display_board_serial();
-    delay(2000);
-    winner = 0;
-  }
-  delay(FSM[ST].time);
+	// Handle no state change
+	if (last_ST != ST)
+	{
+		if (put_coin(FSM[ST].col, FSM[ST].player))
+		{
+			display_board_serial();
+			winner = check_win();
+			last_ST = ST;
+		}
+	}
+	// Handle win
+	if (winner) {
+		Serial.print("Winner is Player: ");
+		Serial.println(winner);
+		delay(2000);
+		fill_board(winner);
+		delay(2000);
+		display_board_serial();
+		delay(3000);
+		fill_board(0);
+		delay(2000);
+		display_board_serial();
+		delay(2000);
+		winner = 0;
+	}
+	delay(FSM[ST].time);
 
-  // Input State
-  input = get_input();
-  ST = FSM[ST].next_st[input];
+	// Input State
+	input = get_input();
+	ST = FSM[ST].next_st[input];
 }
 
 int get_input(void) {
@@ -159,17 +164,21 @@ int get_input(void) {
     return (0);
 }
 
-void put_coin(int col, int player) {
-  int i;
+int put_coin(int col, int player)
+{
+	int i;
 
-  i = 5;
-  while (i >= 0) {
-    if (board[i][col] == 0) {
-      board[i][col] = player;
-      return;
-    }
-    --i;
-  }
+	i = 5;
+	while (i >= 0)
+	{
+		if (board[i][col] == 0)
+		{
+			board[i][col] = player;
+			return (1);
+		}
+		--i;
+	}
+	return (0);
 }
 
 void display_board_serial(void) {
