@@ -66,9 +66,10 @@ t_fsm	FSM[14] = {
 	{6, 2, 1500, {col6_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col6_p2
 };
 
-static int ST = col0_p2;
-static int last_ST = col0_p2;
-static int winner = 0;
+static int	ST = col0_p2;
+static int	last_ST = col0_p2;
+static int	winner = 0;
+static int	turn = 0;
 
 void	setup(void)
 {
@@ -92,8 +93,8 @@ void	setup(void)
 
 void	loop(void)
 {
-	String msg;
-	int input;
+	String	msg;
+	int		input;
 
 	// Handle no state change
 	if (last_ST != ST)
@@ -103,10 +104,19 @@ void	loop(void)
 			display_board_serial();
 			winner = check_win();
 			last_ST = ST;
+			++turn;
 		}
 	}
-	// Handle win
-	if (winner) {
+	// Handle win and draw
+	if (!winner && turn == 42)
+	{
+		Serial.print("Draw");
+		delay(2000);
+		fill_board(0);
+		delay(2000);
+		turn = 0;
+	}
+	else if (winner) {
 		Serial.print("Winner is Player: ");
 		Serial.println(winner);
 		delay(2000);
@@ -119,6 +129,7 @@ void	loop(void)
 		display_board_serial();
 		delay(2000);
 		winner = 0;
+		turn = 0;
 	}
 	delay(FSM[ST].time);
 
