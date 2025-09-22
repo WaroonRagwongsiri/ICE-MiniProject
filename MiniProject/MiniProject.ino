@@ -111,9 +111,9 @@ void	loop(void)
 	if (!winner && turn == 41)
 	{
 		Serial.print("Draw");
-		delay(3500);
+		delay(1000);
 		fill_board(0);
-		delay(3500);
+		delay(1000);
 		turn = 0;
 		last_ST = col0_p2;
 		ST = col0_p2;
