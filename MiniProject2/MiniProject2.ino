@@ -56,7 +56,7 @@ void setup() {
   tft.setBackColor(Trans);
   tft.setColor(Black);
   tft.print(String("Player 1"), CENTER, 1);
-  tft.setColor(Navy);
+  tft.setColor(Yellow);
   // tft.fillRect(16, 19, 142, 127);  //Perimeter
   tft.fillRect(13, 19, 145, 127);  //Perimeter
   for (int i = 0; i < 7; i++) {
