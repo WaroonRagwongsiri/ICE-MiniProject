@@ -108,12 +108,12 @@ void	loop(void)
 		}
 	}
 	// Handle win and draw
-	if (!winner && turn == 42)
+	if (!winner && turn == 41)
 	{
 		Serial.print("Draw");
-		delay(2000);
+		delay(3500);
 		fill_board(0);
-		delay(2000);
+		delay(3500);
 		turn = 0;
 	}
 	else if (winner) {
