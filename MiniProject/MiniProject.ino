@@ -115,6 +115,8 @@ void	loop(void)
 		fill_board(0);
 		delay(2000);
 		turn = 0;
+		last_ST = col0_p2;
+		ST = col0_p2;
 	}
 	else if (winner) {
 		Serial.print("Winner is Player: ");
