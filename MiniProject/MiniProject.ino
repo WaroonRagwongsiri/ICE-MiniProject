@@ -31,6 +31,7 @@ const SoftwareSerial mySerial(RX_IN, TX_OUT);
 #define col4_p2 11
 #define col5_p2 12
 #define col6_p2 13
+#define blank 14
 
 typedef struct s_fsm {
   int col;
@@ -48,7 +49,7 @@ static int	board[6][7] = {
 	{0, 0, 0, 0, 0, 0, 0,},
 };
 
-t_fsm	FSM[14] = {
+t_fsm	FSM[15] = {
 	{0, 1, 1500, {col0_p1, col0_p2, col1_p2, col2_p2, col3_p2, col4_p2, col5_p2, col6_p2, }}, 	// col0_p1
 	{1, 1, 1500, {col1_p1, col0_p2, col1_p2, col2_p2, col3_p2, col4_p2, col5_p2, col6_p2, }},	// col1_p1
 	{2, 1, 1500, {col2_p1, col0_p2, col1_p2, col2_p2, col3_p2, col4_p2, col5_p2, col6_p2, }},	// col2_p1
@@ -64,6 +65,8 @@ t_fsm	FSM[14] = {
 	{4, 2, 1500, {col4_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col4_p2
 	{5, 2, 1500, {col5_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col5_p2
 	{6, 2, 1500, {col6_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col6_p2
+
+	{0, 0, 1500, {col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, }}, 	// Blank
 };
 
 static int	ST = col0_p2;
@@ -108,15 +111,14 @@ void	loop(void)
 		}
 	}
 	// Handle win and draw
-	if (!winner && turn == 41)
+	if (!winner && turn == 42)
 	{
 		Serial.print("Draw");
 		delay(1000);
 		fill_board(0);
 		delay(1000);
+		winner = 0;
 		turn = 0;
-		last_ST = col0_p2;
-		ST = col0_p2;
 	}
 	else if (winner) {
 		Serial.print("Winner is Player: ");
