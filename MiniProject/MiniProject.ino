@@ -31,7 +31,6 @@ const SoftwareSerial mySerial(RX_IN, TX_OUT);
 #define col4_p2 11
 #define col5_p2 12
 #define col6_p2 13
-#define blank 14
 
 typedef struct s_fsm {
   int col;
@@ -65,8 +64,6 @@ t_fsm	FSM[15] = {
 	{4, 2, 1500, {col4_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col4_p2
 	{5, 2, 1500, {col5_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col5_p2
 	{6, 2, 1500, {col6_p2, col0_p1, col1_p1, col2_p1, col3_p1, col4_p1, col5_p1, col6_p1, }}, 	// col6_p2
-
-	{0, 0, 1500, {col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, col0_p2, }}, 	// Blank
 };
 
 static int	ST = col0_p2;
@@ -109,6 +106,10 @@ void	loop(void)
 			last_ST = ST;
 			++turn;
 		}
+		else
+		{
+			ST = last_ST;
+		}
 	}
 	// Handle win and draw
 	if (!winner && turn == 42)
@@ -116,6 +117,8 @@ void	loop(void)
 		Serial.print("Draw");
 		delay(1000);
 		fill_board(0);
+		delay(1000);
+		display_board_serial();
 		delay(1000);
 		winner = 0;
 		turn = 0;
