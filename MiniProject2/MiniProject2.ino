@@ -37,45 +37,49 @@ static int	board[6][7] = {
 	{0, 0, 0, 0, 0, 0, 0,},
 };
 
-void setup() {
-  Serial.begin(9600);
-  mySerial.begin(2400);
-  Serial.setTimeout(100);
-  mySerial.setTimeout(100);
-  tft.InitLCD();
-  tft.setFont(BigFont);
-  tft.clrScr();
-  pinMode(Led1, OUTPUT);
-  pinMode(Led2, OUTPUT);
-  digitalWrite(Led1, LOW);
-  digitalWrite(Led2, HIGH);
-  Serial.println("Board 2 Ready");
-  tft.fillScr(Black);
-  tft.setColor(Green);
-  tft.fillRect(0, 0, 159, 18);  //Banner
-  tft.setBackColor(Trans);
-  tft.setColor(Black);
-  tft.print(String("Player 1"), CENTER, 1);
-  tft.setColor(Yellow);
-  // tft.fillRect(16, 19, 142, 127);  //Perimeter
-  tft.fillRect(13, 19, 145, 127);  //Perimeter
-  for (int i = 0; i < 7; i++) {
-    for (int j = 0; j < 7; j++) {
-      tft.setColor(Black);
-      tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
-    }
-  }
+void	setup()
+{
+	Serial.begin(9600);
+	mySerial.begin(2400);
+	Serial.setTimeout(100);
+	mySerial.setTimeout(100);
+	tft.InitLCD();
+	tft.setFont(BigFont);
+	tft.clrScr();
+	pinMode(Led1, OUTPUT);
+	pinMode(Led2, OUTPUT);
+	digitalWrite(Led1, LOW);
+	digitalWrite(Led2, HIGH);
+	Serial.println("Board 2 Ready");
+	tft.fillScr(Black);
+	tft.setColor(Green);
+	tft.fillRect(0, 0, 159, 18);  //Banner
+	tft.setBackColor(Trans);
+	tft.setColor(Black);
+	tft.print(String("Player 1"), CENTER, 1);
+	tft.setColor(Navy);
+	// tft.fillRect(16, 19, 142, 127);  //Perimeter
+	tft.fillRect(13, 19, 145, 127);  //Perimeter
+	for (int i = 0; i < 7; i++)
+	{
+		for (int j = 0; j < 7; j++)
+		{
+			tft.setColor(Black);
+			tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+		}
+	}
 }
 
-void loop() {
+void	loop()
+{
 	if (mySerial.available() > 0)
 	{
 		serial_to_board();
 		display_board_serial();
-    if (check_zero())
-    {
-      currentPlayer = 1;
-    }
+		if (check_zero())
+		{
+			currentPlayer = 1;
+		}
 		if (!currentPlayer)
 		{
 			digitalWrite(Led1, HIGH);
@@ -102,58 +106,69 @@ void loop() {
 	}
 }
 
-void serial_to_board() {
-  String str;
-  int row;
-  int col;
-  int num;
+void	serial_to_board() {
+	String	str;
+	int		row;
+	int		col;
+	int		num;
 
-  str = mySerial.readString();
-  row = 0;
-  num = 0;
-  while (row < 6) {
-    col = 0;
-    while (col < 7) {
-      board[row][col] = str[num] - '0';
-      col++;
-      num += 2;
-    }
-    row++;
-  }
+	str = mySerial.readString();
+	row = 0;
+	num = 0;
+	while (row < 6)
+	{
+		col = 0;
+		while (col < 7)
+		{
+			board[row][col] = str[num] - '0';
+			col++;
+			num += 2;
+		}
+		row++;
+	}
 }
 
-void display_board_serial(void) {
-  Serial.println("Board Array:");
-  for (int row = 0; row < 6; row++) {
-    for (int col = 0; col < 7; col++) {
-      Serial.print(board[row][col]);
-      if (col < 6) {
-        Serial.print(",");
-      }
-    }
-    Serial.println();
-  }
-  Serial.println();
+void display_board_serial(void)
+{
+	Serial.println("Board Array:");
+	for (int row = 0; row < 6; row++)
+	{
+		for (int col = 0; col < 7; col++)
+		{
+			Serial.print(board[row][col]);
+			if (col < 6)
+			{
+				Serial.print(",");
+			}
+		}
+		Serial.println();
+	}
+	Serial.println();
 }
 
 void	display_tft(void)
 {
-	for (int i = 0; i < 6; i++) {
-      for (int j = 0; j < 7; j++) {
-        if (board[i][j] == 0) {
-          tft.setColor(Black);
-          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
-        }
-        if (board[i][j] == 1) {
-          tft.setColor(Green);
-          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
-        }
-        if (board[i][j] == 2) {
-          tft.setColor(Red);
-          tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
-        }
-      }
-    }
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 7; j++)
+		{
+			if (board[i][j] == 0)
+			{
+				tft.setColor(Black);
+				tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+			}
+			if (board[i][j] == 1)
+			{
+				tft.setColor(Green);
+				tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+			}
+			if (board[i][j] == 2)
+			{
+				tft.setColor(Red);
+				tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+			}
+		}
+	}
 }
 
 int	check_zero(void)
