@@ -60,7 +60,7 @@ void setup() {
   // Initialize LEDs
   pinMode(Led1, OUTPUT);
   pinMode(Led2, OUTPUT);
-  // Default LED state: Led1 off, Led2 on
+  // Default LED state: Led1 on, Led2 off
   digitalWrite(Led1, LOW);
   digitalWrite(Led2, HIGH);
 
@@ -102,9 +102,9 @@ void loop() {
 
     // Toggle player indicator and update banner + LEDs
     if (!currentPlayer) {
-      // Show Player 2's turn: Led1 ON, Led2 OFF, banner red
-      digitalWrite(Led1, HIGH); // Player 2 indicator
-      digitalWrite(Led2, LOW);
+      // Show Player 2's turn: Led1 OFF, Led2 ON, banner red
+      digitalWrite(Led1, HIGH);
+      digitalWrite(Led2, LOW);  // Player 2 indicator
       tft.setColor(Red);
       tft.fillRect(0, 0, 159, 18);  // Banner
       tft.setBackColor(Trans);
@@ -112,7 +112,7 @@ void loop() {
       tft.print(String("Player 2"), CENTER, 1);
       currentPlayer = !currentPlayer; // flip turn state
     } else {
-      // Show Player 1's turn: Led1 OFF, Led2 ON, banner green
+      // Show Player 1's turn: Led1 ON, Led2 OFF, banner green
       digitalWrite(Led1, LOW);  // Player 1 indicator
       digitalWrite(Led2, HIGH);
       tft.setColor(Green);
