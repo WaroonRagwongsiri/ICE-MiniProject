@@ -52,19 +52,18 @@ void setup() {
   digitalWrite(Led1, LOW);
   digitalWrite(Led2, HIGH);
   Serial.println("Board 2 Ready");
-  tft.fillScr(Black);  //Background
+  tft.fillScr(Black);  // Background
   tft.setColor(Green);
-  tft.fillRect(0, 0, 159, 18);  //Banner
-  tft.setBackColor(Trans);
-  tft.setColor(Black);
+  tft.fillRect(0, 0, 159, 18);  // Banner
+  tft.setBackColor(Trans);  // Font Background
+  tft.setColor(Black);  // Font Color
   tft.print(String("Player 1"), CENTER, 1);
   tft.setColor(Navy);
-  tft.fillRect(13, 19, 145, 127);  //Board
-  for (int i = 0; i < 7; i++)      //Holes
-  {
+  tft.fillRect(13, 19, 145, 127); // Board
+  for (int i = 0; i < 7; i++) {
     for (int j = 0; j < 7; j++) {
-      tft.setColor(Black);
-      tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);
+      tft.setColor(Black);  // Hole Color
+      tft.fillCircle(25 + (18 * j), 28 + (18 * i), 8);  // Hole
     }
   }
 }
