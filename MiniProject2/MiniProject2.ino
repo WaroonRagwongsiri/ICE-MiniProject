@@ -95,8 +95,7 @@ void loop() {
     // Print the received board to the USB Serial for debugging
     display_board_serial();
 
-    // If the board is empty (all zeros), set currentPlayer to 1 so the
-    // next branch toggles it correctly
+    // If the board is empty (all zeros), set currentPlayer to 1
     if (check_zero()) {
       currentPlayer = 1;
     }
