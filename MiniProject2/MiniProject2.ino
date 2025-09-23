@@ -77,19 +77,19 @@ void loop() {
       currentPlayer = 1;
     }
     if (!currentPlayer) {
-      digitalWrite(Led1, HIGH);
+      digitalWrite(Led1, HIGH); // Player 2
       digitalWrite(Led2, LOW);
       tft.setColor(Red);
-      tft.fillRect(0, 0, 159, 18);  //Banner
+      tft.fillRect(0, 0, 159, 18);  // Banner
       tft.setBackColor(Trans);
       tft.setColor(White);
       tft.print(String("Player 2"), CENTER, 1);
       currentPlayer = !currentPlayer;
     } else {
-      digitalWrite(Led1, LOW);
+      digitalWrite(Led1, LOW);  // Player 1
       digitalWrite(Led2, HIGH);
       tft.setColor(Green);
-      tft.fillRect(0, 0, 159, 18);  //Banner
+      tft.fillRect(0, 0, 159, 18);  // Banner
       tft.setBackColor(Trans);
       tft.setColor(Black);
       tft.print(String("Player 1"), CENTER, 1);
